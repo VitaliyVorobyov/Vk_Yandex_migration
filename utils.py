@@ -2,8 +2,6 @@ from datetime import datetime
 from dataclasses import dataclass
 import json
 
-from tqdm import tqdm, trange
-
 from vk import VkRequests
 from yandex_disk import YandexDiskRequests
 
