@@ -1,1 +1,5 @@
-<h1>SORRY IT'S FILE IN DEVELOPING</h1>
+# This program is for transferring photo from *[VK](https://vk.com)* profile in *[Yandex.Disk](https://disk.yandex.ru)*
+#
+## For start select two-way:
+>-  Run in IDE
+>-  Run in Docker
