@@ -2,4 +2,10 @@
 #
 ## For start select one from two ways:
 >-  Run in IDE
->-  Run in Docker
+>>- activate venv
+>>- enter cmd: 'pip install -r requirements.txt'
+>>- enter cmd: 'python3 main.py'
+>-  Run in Docker:
+>>- install an run Docker
+>>- in terminal enter cmd: 'docker build -t my-python-app .'
+>>- in terminal enter cmd: 'docker run -it my-python-app'
