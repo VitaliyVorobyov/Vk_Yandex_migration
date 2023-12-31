@@ -23,18 +23,24 @@ class VkUtils(VkRequests):
 
 @dataclass
 class YandexUtils(YandexDiskRequests):
-    def get_name_photo(self) -> any:
-        photo_json = self.get_info_directory()
+    name_directory: str = ''
 
-        if photo_json.get('error') == 'DiskNotFoundError':
-            self.create_directory()
-            photo_json = self.get_info_directory()
+    def __post_init__(self):
+        select_type_directory = str(input('Введите "n" - для создания директории, "y" - для выбора директории: '))
+        if select_type_directory == 'n':
+            self.name_directory = str(input('Введите название создаваемой директории: '))
+            self.name_directory = self.create_directory(self.name_directory)
+        elif select_type_directory == 'y':
+            self.name_directory = str(input('Введите название существующей директории: '))
+        else:
+            raise Exception('Введено некорректное значение')
 
-        for photo in photo_json.get('_embedded').get('items'):
-            yield photo.get('name')
+    def get_photo_directory(self, name_directory: str) -> list:
+        photo_json = self.get_info_directory(name_directory)
+        name_photos_in_directory = [photo.get('name') for photo in photo_json.get('_embedded').get('items')]
+        return name_photos_in_directory
 
-    def upload_photo(self, photos: list) -> list:
-        directory = list(self.get_name_photo())
+    def upload_photo(self, photos: list, name_photos_in_directory: list, name_directory: str) -> list:
         photo_info = []
         for photo in tqdm(photos, desc='Process uploading photos:'):
             name = str(photo[1])
@@ -42,13 +48,13 @@ class YandexUtils(YandexDiskRequests):
             add_name = name + '_' + prefix
             link = photo[3]
             size = photo[2]
-            if name in directory and add_name in directory:
+            if name in name_photos_in_directory and add_name in name_photos_in_directory:
                 continue
-            elif name not in directory:
-                self.upload(link, name)
+            elif name not in name_photos_in_directory:
+                self.upload(link, name, name_directory)
                 photo_info.append({'file_name': name, 'size': size})
-            elif name in directory:
-                self.upload(link, add_name)
+            elif name in name_photos_in_directory:
+                self.upload(link, add_name, name_directory)
                 photo_info.append({'file_name': add_name, 'size': size})
         if len(photo_info) == 0:
             print('No photos for uploading')
@@ -69,3 +75,4 @@ class SaveJson:
             data = self.add_data
             with open('data.json', 'w') as file:
                 json.dump(data, file)
+        return
