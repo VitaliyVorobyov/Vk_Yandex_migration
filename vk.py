@@ -22,7 +22,6 @@ class VkRequests:
                         'extended': '1'}
         response = requests.post(url=self.url+method, params=params)
         if response.status_code == 200:
-            response = response.json()
+            return response.json()
         else:
-            print(response.json().get('error'))
-        return response
+            raise Exception(f"{response.status_code} - {response.json().get('error')}")
